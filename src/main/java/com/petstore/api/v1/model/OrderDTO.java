@@ -8,8 +8,9 @@ import lombok.Data;
 public class OrderDTO {
 
 	private Long orderId;
-	private Long petId;
 	private LocalDate shipDate;
+	private Integer quantity;
 	private String status;
+	private PetDTO petId;
 
 }
