@@ -1,0 +1,32 @@
+package com.petstore.domain;
+
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import com.petstore.reference.PetStatus;
+
+import lombok.Data;
+
+@Entity(name = "pets")
+@Data
+public class Pet {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	private String name;
+
+	@Enumerated
+	private PetStatus petStatus;
+
+	@OneToOne
+	@JoinColumn(referencedColumnName = "id", name = "CATEGORY_ID")
+	private Category category;
+
+}
