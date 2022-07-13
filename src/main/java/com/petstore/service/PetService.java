@@ -11,4 +11,6 @@ public interface PetService {
 	PetDTO getPetById(Long id);
 
 	List<PetDTO> getAllPets();
+	
+	List<PetDTO> getPetsByStatus(String petStatus);
 }

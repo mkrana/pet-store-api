@@ -3,6 +3,7 @@ package com.petstore.domain;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,7 +29,9 @@ public class Order {
 	private Integer quantity;
 	private LocalDate shipDate;
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private OrderStatus status;
+
+	private Boolean isComplete;
 
 }

@@ -6,7 +6,7 @@ import org.mapstruct.Mapping;
 import com.petstore.api.v1.model.UserDTO;
 import com.petstore.domain.User;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
 
 	@Mapping(source = "id", target = "userId")

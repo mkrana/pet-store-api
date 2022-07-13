@@ -10,4 +10,4 @@ public class PetDTO {
 	private String name;
 	private String petStatus;
 
-}
+} 

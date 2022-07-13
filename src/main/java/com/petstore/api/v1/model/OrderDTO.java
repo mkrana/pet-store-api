@@ -12,5 +12,6 @@ public class OrderDTO {
 	private Integer quantity;
 	private String status;
 	private PetDTO petId;
+	private Boolean isComplete;
 
 }

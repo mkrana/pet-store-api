@@ -1,6 +1,7 @@
 package com.petstore.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,7 +23,7 @@ public class Pet {
 
 	private String name;
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private PetStatus petStatus;
 
 	@OneToOne

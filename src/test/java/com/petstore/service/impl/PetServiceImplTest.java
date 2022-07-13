@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.petstore.api.v1.model.PetDTO;
 import com.petstore.domain.Pet;
 import com.petstore.mapper.PetMapper;
+import com.petstore.reference.PetStatus;
 import com.petstore.repository.PetRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -85,6 +86,24 @@ class PetServiceImplTest {
 		assertNotNull(petDTOs);
 		verify(petRepository, times(1)).findAll();
 		verify(petMapper, times(petDTOs.size())).toPetDTO(any());
+
+	}
+
+	@Test
+	void testGetPetByPetStatus() {
+		Pet petOne = new Pet();
+		petOne.setPetStatus(PetStatus.PENDING);
+		Pet petTwo = new Pet();
+		petTwo.setPetStatus(PetStatus.PENDING);
+		List<Pet> pets = Arrays.asList(petOne, petTwo);
+		when(petRepository.findByPetStatus(any())).thenReturn(pets);
+		PetDTO petDTOOne = new PetDTO();
+		petDTOOne.setPetStatus(PetStatus.PENDING.toString());
+		when(petMapper.toPetDTO(any())).thenReturn(petDTOOne);
+		List<PetDTO> petDtos = petService.getPetsByStatus(PetStatus.AVAILABLE.toString());
+		assertNotNull(petDtos);
+		assertEquals(pets.size(), petDtos.size());
+		verify(petMapper, times(pets.size())).toPetDTO(any());
 
 	}
 
