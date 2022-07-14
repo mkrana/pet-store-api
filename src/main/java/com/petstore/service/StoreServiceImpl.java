@@ -1,6 +1,8 @@
 package com.petstore.service;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -8,6 +10,7 @@ import com.petstore.api.v1.model.InventoryDTO;
 import com.petstore.api.v1.model.OrderDTO;
 import com.petstore.domain.Order;
 import com.petstore.mapper.OrderMapper;
+import com.petstore.reference.OrderStatus;
 import com.petstore.repository.OrderRepository;
 
 @Service
@@ -34,8 +37,9 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public InventoryDTO getInventory() {
-		return null;
+	public Map<OrderStatus, Long> getInventory() {
+		return orderRepository.findByStatusAndCountGroupByStatus().stream()
+				.collect(Collectors.toMap(InventoryDTO::getOrderStatus, InventoryDTO::getCountOfOrders));
 	}
 
 }

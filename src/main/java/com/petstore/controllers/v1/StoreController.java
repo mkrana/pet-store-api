@@ -1,5 +1,7 @@
 package com.petstore.controllers.v1;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.petstore.api.v1.model.OrderDTO;
+import com.petstore.reference.OrderStatus;
 import com.petstore.service.StoreService;
 
 @Controller
@@ -23,6 +26,11 @@ public class StoreController {
 	@GetMapping("/order/{orderId}")
 	public ResponseEntity<OrderDTO> orderById(@PathVariable String orderId) {
 		return new ResponseEntity<>(storeService.getOrderById(Long.valueOf(orderId)), HttpStatus.OK);
+	}
+
+	@GetMapping("/inventory")
+	public ResponseEntity<Map<OrderStatus, Long>> inventoryStatus() {
+		return new ResponseEntity<>(storeService.getInventory(), HttpStatus.OK);
 	}
 
 }

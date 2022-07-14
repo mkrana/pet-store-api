@@ -67,19 +67,60 @@ public class AppStartup implements CommandLineRunner {
 		axel.setPetStatus(PetStatus.PENDING);
 		axel.setCategory(cat);
 		petRepository.save(axel);
+		
+		Pet jimmy = new Pet();
+		jimmy.setName("Jimmy");
+		jimmy.setPetStatus(PetStatus.PENDING);
+		jimmy.setCategory(dog);
+		petRepository.save(jimmy);
+		
+		Pet roscoe = new Pet();
+		roscoe.setName("Roscoe");
+		roscoe.setCategory(cat);
+		roscoe.setPetStatus(PetStatus.AVAILABLE);
+		petRepository.save(roscoe);
 
 	}
 
 	public void createOrders() {
 		Pet fiona = petRepository.findByName("Fiona").get(0);
 		Order order = new Order();
-		order.setIsComplete(false);
+		order.setIsComplete(true);
 		order.setStatus(OrderStatus.PLACED);
 		order.setQuantity(2);
 		order.setShipDate(LocalDate.now().minusDays(5));
 		order.setPetId(fiona);
 		orderRepository.save(order);
-
+		
+		
+		Pet roscoe = petRepository.findByName("Roscoe").get(0);
+		Order order2 = new Order();
+		order2.setIsComplete(false);
+		order2.setStatus(OrderStatus.PLACED);
+		order2.setQuantity(2);
+		order2.setShipDate(LocalDate.now().minusDays(6));
+		order2.setPetId(roscoe);
+		orderRepository.save(order2);
+		
+		
+		Pet jimmy = petRepository.findByName("Jimmy").get(0);
+		Order order3 = new Order();
+		order3.setIsComplete(true);
+		order3.setStatus(OrderStatus.APPROVED);
+		order3.setQuantity(2);
+		order3.setShipDate(LocalDate.now().minusDays(6));
+		order3.setPetId(jimmy);
+		orderRepository.save(order3);
+		
+		Pet axel = petRepository.findByName("Axel").get(0);
+		Order order4 = new Order();
+		order4.setIsComplete(false);
+		order4.setStatus(OrderStatus.DELIVERED);
+		order4.setQuantity(2);
+		order4.setShipDate(LocalDate.now().minusDays(8));
+		order4.setPetId(axel);
+		orderRepository.save(order4);
+		
 	}
 
 }
