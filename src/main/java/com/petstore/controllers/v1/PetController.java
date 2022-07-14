@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.petstore.api.v1.model.PetDTO;
 import com.petstore.api.v1.model.PetListDTO;
 import com.petstore.service.PetService;
 
