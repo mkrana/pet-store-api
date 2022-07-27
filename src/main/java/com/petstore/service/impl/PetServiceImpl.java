@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.petstore.api.v1.model.PetDTO;
+import com.petstore.domain.Pet;
 import com.petstore.mapper.PetMapper;
 import com.petstore.reference.PetStatus;
 import com.petstore.repository.PetRepository;
@@ -50,10 +51,25 @@ public class PetServiceImpl implements PetService {
 			return petRepository.findByPetStatus(match.get()).stream().map(petMapper::toPetDTO)
 					.collect(Collectors.toList());
 		} else {
-			// TODO: Unit test this.
+			// TODO: Exception handling needed
 			return Arrays.asList();
 		}
 
+	}
+
+	@Override
+	public PetDTO savePet(final PetDTO petDTO) {
+		// Verify if the pet status is valid
+
+		boolean isValidPetStatus = PetStatus.stream()
+				.anyMatch(petStatus -> petDTO.getPetStatus().equalsIgnoreCase(petStatus.getStatus()));
+		if (isValidPetStatus) {
+			Pet savedPet = petRepository.save(petMapper.toPet(petDTO));
+			return petMapper.toPetDTO(savedPet);
+		} else {
+			// TODO - Exception handling needed
+			throw new RuntimeException("No Such PetStatus Exists");
+		}
 	}
 
 }

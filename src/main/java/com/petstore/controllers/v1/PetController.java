@@ -7,8 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.petstore.api.v1.model.PetDTO;
 import com.petstore.api.v1.model.PetListDTO;
 import com.petstore.service.PetService;
 
@@ -41,6 +44,11 @@ public class PetController {
 	@GetMapping("/status/{petStatus}")
 	public ResponseEntity<PetListDTO> getPetByStatus(@PathVariable String petStatus) {
 		return new ResponseEntity<>(new PetListDTO(petService.getPetsByStatus(petStatus)), HttpStatus.OK);
+	}
+	
+	@PostMapping
+	public ResponseEntity<PetDTO> savePet(@RequestBody PetDTO petDTO){
+		return new ResponseEntity<>(petService.savePet(petDTO),HttpStatus.CREATED);
 	}
 
 }

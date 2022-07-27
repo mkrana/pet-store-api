@@ -13,4 +13,6 @@ public interface PetService {
 	List<PetDTO> getAllPets();
 	
 	List<PetDTO> getPetsByStatus(String petStatus);
+	
+	PetDTO savePet(PetDTO petDTO);
 }

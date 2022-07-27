@@ -37,49 +37,49 @@ public class AppStartup implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		createCategories();
 		createPets();
-		createOrders();
+		// createOrders();
 
-	}
-
-	public void createCategories() {
-		Category dog = new Category();
-		dog.setName("Dog");
-		categoryRepository.save(dog);
-		Category cat = new Category();
-		cat.setName("Cat");
-		categoryRepository.save(cat);
-		log.info("Count of Categories present:" + categoryRepository.findAll().size());
 	}
 
 	public void createPets() {
-		Category dog = categoryRepository.findByName("Dog").get(0);
-		Category cat = categoryRepository.findByName("Cat").get(0);
 		Pet fiona = new Pet();
 		fiona.setName("Fiona");
+		Category dog = new Category();
+		dog.setName("Dog");
 		fiona.setCategory(dog);
 		fiona.setPetStatus(PetStatus.AVAILABLE);
 		petRepository.save(fiona);
 
+		
+		Category cat = new Category();
+		cat.setName("Cat");
+		
 		Pet axel = new Pet();
 		axel.setName("Axel");
 		axel.setPetStatus(PetStatus.PENDING);
 		axel.setCategory(cat);
 		petRepository.save(axel);
 		
+		
+		Category catTwo = new Category();
+		catTwo.setName("Ytthh");
+		
+		
 		Pet jimmy = new Pet();
 		jimmy.setName("Jimmy");
 		jimmy.setPetStatus(PetStatus.PENDING);
-		jimmy.setCategory(dog);
+		jimmy.setCategory(catTwo);
 		petRepository.save(jimmy);
+		
+		Category pitty = new Category();
+		pitty.setName("Pitty");
 		
 		Pet roscoe = new Pet();
 		roscoe.setName("Roscoe");
-		roscoe.setCategory(cat);
+		roscoe.setCategory(pitty);
 		roscoe.setPetStatus(PetStatus.AVAILABLE);
 		petRepository.save(roscoe);
-
 	}
 
 	public void createOrders() {
@@ -91,8 +91,7 @@ public class AppStartup implements CommandLineRunner {
 		order.setShipDate(LocalDate.now().minusDays(5));
 		order.setPetId(fiona);
 		orderRepository.save(order);
-		
-		
+
 		Pet roscoe = petRepository.findByName("Roscoe").get(0);
 		Order order2 = new Order();
 		order2.setIsComplete(false);
@@ -101,8 +100,7 @@ public class AppStartup implements CommandLineRunner {
 		order2.setShipDate(LocalDate.now().minusDays(6));
 		order2.setPetId(roscoe);
 		orderRepository.save(order2);
-		
-		
+
 		Pet jimmy = petRepository.findByName("Jimmy").get(0);
 		Order order3 = new Order();
 		order3.setIsComplete(true);
@@ -111,7 +109,7 @@ public class AppStartup implements CommandLineRunner {
 		order3.setShipDate(LocalDate.now().minusDays(6));
 		order3.setPetId(jimmy);
 		orderRepository.save(order3);
-		
+
 		Pet axel = petRepository.findByName("Axel").get(0);
 		Order order4 = new Order();
 		order4.setIsComplete(false);
@@ -120,7 +118,7 @@ public class AppStartup implements CommandLineRunner {
 		order4.setShipDate(LocalDate.now().minusDays(8));
 		order4.setPetId(axel);
 		orderRepository.save(order4);
-		
+
 	}
 
 }

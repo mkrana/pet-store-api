@@ -1,7 +1,6 @@
 package com.petstore.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -10,9 +9,10 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -24,14 +24,17 @@ import com.petstore.repository.CategoryRepository;
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceImplTest {
 
-	@Mock
-	CategoryMapper categoryMapper;
+	CategoryMapper categoryMapper = Mappers.getMapper(CategoryMapper.class);
 
 	@Mock
 	CategoryRepository categoryRepository;
 
-	@InjectMocks
 	CategoryServiceImpl categoryService;
+
+	@BeforeEach
+	void setUp() {
+		categoryService = new CategoryServiceImpl(categoryRepository, categoryMapper);
+	}
 
 	@Test
 	void testFindItemsByCategory() {
@@ -40,7 +43,6 @@ class CategoryServiceImplTest {
 		CategoryDTO categoryDto = new CategoryDTO();
 		categoryDto.setName("Dogs");
 		when(categoryRepository.findByName(anyString())).thenReturn(Arrays.asList(category));
-		when(categoryMapper.toCategoryDTO(any())).thenReturn(categoryDto);
 		CategoryDTO entityReturned = categoryService.findItemsByCategory("Dogs");
 		assertEquals("Dogs", entityReturned.getName());
 		verify(categoryRepository).findByName(anyString());
@@ -51,10 +53,8 @@ class CategoryServiceImplTest {
 	void testFindAllCategories() {
 
 		when(categoryRepository.findAll()).thenReturn(Arrays.asList(new Category(), new Category(), new Category()));
-		when(categoryMapper.toCategoryDTO(any())).thenReturn(new CategoryDTO());
 		List<CategoryDTO> categories = categoryService.findAllCategories();
 		assertEquals(3, categories.size());
-		verify(categoryMapper, times(categories.size())).toCategoryDTO(any());
 		verify(categoryRepository, times(1)).findAll();
 	}
 

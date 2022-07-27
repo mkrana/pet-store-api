@@ -1,5 +1,6 @@
 package com.petstore.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -7,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import com.petstore.reference.PetStatus;
@@ -26,7 +28,7 @@ public class Pet {
 	@Enumerated(EnumType.STRING)
 	private PetStatus petStatus;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(referencedColumnName = "id", name = "CATEGORY_ID")
 	private Category category;
 

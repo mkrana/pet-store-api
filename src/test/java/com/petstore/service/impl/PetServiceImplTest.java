@@ -14,13 +14,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.petstore.api.v1.model.CategoryDTO;
 import com.petstore.api.v1.model.PetDTO;
+import com.petstore.domain.Category;
 import com.petstore.domain.Pet;
 import com.petstore.mapper.PetMapper;
 import com.petstore.reference.PetStatus;
@@ -29,14 +32,17 @@ import com.petstore.repository.PetRepository;
 @ExtendWith(MockitoExtension.class)
 class PetServiceImplTest {
 
-	@Mock
-	PetMapper petMapper;
+	PetMapper petMapper = Mappers.getMapper(PetMapper.class);
 
 	@Mock
 	PetRepository petRepository;
 
-	@InjectMocks
 	PetServiceImpl petService;
+
+	@BeforeEach
+	void setUp() {
+		petService = new PetServiceImpl(petMapper, petRepository);
+	}
 
 	@Test
 	void testGetPetByName() {
@@ -51,8 +57,6 @@ class PetServiceImplTest {
 		petList.add(roscoe);
 
 		when(petRepository.findByName("Roscoe")).thenReturn(petList);
-		when(petMapper.toPetDTO(any())).thenReturn(petDto);
-		// Invoke getPetByName
 		List<PetDTO> listOfPets = petService.getPetByName("Roscoe");
 		assertNotNull(listOfPets);
 		assertEquals(2, listOfPets.size());
@@ -67,8 +71,6 @@ class PetServiceImplTest {
 		PetDTO petDto = new PetDTO();
 		petDto.setPetId(1L);
 		when(petRepository.findById(anyLong())).thenReturn(Optional.of(pet));
-		when(petMapper.toPetDTO(any())).thenReturn(petDto);
-		// Invoke the method
 		PetDTO petObject = petService.getPetById(1L);
 		assertNotNull(petObject);
 		assertEquals(1L, petObject.getPetId());
@@ -80,12 +82,10 @@ class PetServiceImplTest {
 		List<Pet> pets = Arrays.asList(new Pet(), new Pet(), new Pet());
 
 		when(petRepository.findAll()).thenReturn(pets);
-		when(petMapper.toPetDTO(any())).thenReturn(new PetDTO());
 		List<PetDTO> petDTOs = petService.getAllPets();
 		assertEquals(pets.size(), petDTOs.size());
 		assertNotNull(petDTOs);
 		verify(petRepository, times(1)).findAll();
-		verify(petMapper, times(petDTOs.size())).toPetDTO(any());
 
 	}
 
@@ -99,12 +99,40 @@ class PetServiceImplTest {
 		when(petRepository.findByPetStatus(any())).thenReturn(pets);
 		PetDTO petDTOOne = new PetDTO();
 		petDTOOne.setPetStatus(PetStatus.PENDING.toString());
-		when(petMapper.toPetDTO(any())).thenReturn(petDTOOne);
 		List<PetDTO> petDtos = petService.getPetsByStatus(PetStatus.AVAILABLE.toString());
 		assertNotNull(petDtos);
 		assertEquals(pets.size(), petDtos.size());
-		verify(petMapper, times(pets.size())).toPetDTO(any());
 
+	}
+
+	@Test
+	void testSavePetCorrectPetStatus() {
+
+		PetDTO petDTO = new PetDTO();
+		CategoryDTO categoryDTO = new CategoryDTO();
+		categoryDTO.setName("Dog");
+		categoryDTO.setCategoryId(2L);
+		petDTO.setName("Roxane");
+		petDTO.setPetStatus("AVAILABLE");
+		petDTO.setPetId(1L);
+		petDTO.setCategory(categoryDTO);
+
+		Pet pet = new Pet();
+		pet.setName("Roxane");
+		pet.setPetStatus(PetStatus.AVAILABLE);
+		Category category = new Category();
+		category.setName("Dog");
+		category.setId(2L);
+		pet.setId(1L);
+		pet.setCategory(category);
+
+		when(petRepository.save(any(Pet.class))).thenReturn(pet);
+		PetDTO savedPetDTO = petService.savePet(petDTO);
+
+		assertNotNull(savedPetDTO);
+		assertEquals(petDTO.getName(), savedPetDTO.getName());
+		assertEquals(petDTO, savedPetDTO);
+		assertEquals(petDTO.getCategory(), savedPetDTO.getCategory());
 	}
 
 }
