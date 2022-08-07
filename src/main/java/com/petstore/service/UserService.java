@@ -11,5 +11,7 @@ public interface UserService {
 	public boolean deleteUser(String username);
 
 	public UserDTO updateUser(String username, UserDTO userDTO);
+	
+	public UserDTO patchUser(String username, UserDTO userDTO);
 
 }

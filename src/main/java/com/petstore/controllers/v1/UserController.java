@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -51,4 +52,11 @@ public class UserController {
 	public ResponseEntity<UserDTO> updateUser(@PathVariable String username, @RequestBody UserDTO userDTO) {
 		return new ResponseEntity<>(userService.updateUser(username, userDTO), HttpStatus.CREATED);
 	}
+
+	// Patch API to update User Entity
+	@PatchMapping("/{username}")
+	public ResponseEntity<UserDTO> patchUser(@PathVariable String username, @RequestBody UserDTO userDTO) {
+		return new ResponseEntity<>(userService.patchUser(username, userDTO), HttpStatus.CREATED);
+	}
+
 }
