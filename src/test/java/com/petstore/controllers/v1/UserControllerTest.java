@@ -2,7 +2,11 @@ package com.petstore.controllers.v1;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petstore.api.v1.model.UserDTO;
+import com.petstore.exception.UserNotFoundException;
 import com.petstore.service.impl.UserServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,6 +51,8 @@ class UserControllerTest {
 
 	private static final String FNAME = "FName";
 
+	private static final String USERNAME = "FNameLName";
+
 	@BeforeEach
 	void setUp() throws Exception {
 		userDTO = new UserDTO();
@@ -55,7 +62,8 @@ class UserControllerTest {
 		userDTO.setPhone(PHONE_NMB);
 		userDTO.setUserId(USER_ID);
 		userDTO.setPassword(PWD);
-		mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(userController)
+				.setControllerAdvice(RestResponseEntityExceptionHandler.class).build();
 
 	}
 
@@ -63,23 +71,24 @@ class UserControllerTest {
 	void testCreateUser() throws Exception {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String userStringObject = objectMapper.writeValueAsString(userDTO);
-		// Persisted entity must have a user Id. This would get overwritten during setUp invocation
+		// Persisted entity must have a user Id. This would get overwritten during setUp
+		// invocation
 		userDTO.setUserId(2L);
 		when(userService.createUser(any(UserDTO.class))).thenReturn(userDTO);
-		
+
 		mockMvc.perform(post("/api/v1/user").contentType(MediaType.APPLICATION_JSON).content(userStringObject))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.firstName", is(FNAME)))
-				.andExpect(jsonPath("$.lastName", is(LNAME)))
-				.andExpect(jsonPath("$.email", is(EMAIL)));
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.firstName", is(FNAME)))
+				.andExpect(jsonPath("$.lastName", is(LNAME))).andExpect(jsonPath("$.email", is(EMAIL)));
 	}
-	
-	
+
+	// Method to test if exception is thrown
 	@Test
-	void testGetUserByUserName() {
-		//Stub
-		//when(userService.)
-		//Invoke and Test
+	void testGetUserByUserName() throws Exception {
+		when(userService.findUserByUserName(anyString())).thenThrow(UserNotFoundException.class);
+		mockMvc.perform(get("/api/v1/user/" + USERNAME)).andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.type", is("RESOURCE_NOT_PRESENT")))
+				.andExpect(jsonPath("$.code", is(101)));
+		verify(userService, times(1)).findUserByUserName(anyString());
 	}
 
 }

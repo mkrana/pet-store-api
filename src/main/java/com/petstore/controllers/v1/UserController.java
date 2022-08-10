@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.petstore.api.v1.model.ResponseWrapper;
 import com.petstore.api.v1.model.UserDTO;
 import com.petstore.service.UserService;
 
@@ -39,12 +38,8 @@ public class UserController {
 
 	@DeleteMapping("/{username}")
 	public ResponseEntity<Object> deleteByUsername(@PathVariable String username) {
-		boolean isDeleted = userService.deleteUser(username);
-		if (isDeleted) {
-			return ResponseEntity.noContent().build();
-		} else {
-			return new ResponseEntity<>(new ResponseWrapper(99, "Error", "User Not Found"), HttpStatus.OK);
-		}
+		userService.deleteUser(username);
+		return ResponseEntity.noContent().build();
 	}
 
 	// Update User CRUD

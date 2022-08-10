@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.petstore.api.v1.model.UserDTO;
 import com.petstore.domain.User;
+import com.petstore.exception.UserNotFoundException;
 import com.petstore.mapper.UserMapper;
 import com.petstore.repository.UserRepository;
 import com.petstore.service.UserService;
@@ -29,13 +30,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDTO findUserByUserName(String userName) {
-		Optional<User> userOptional = userRepository.findByUsername(userName);
+	public UserDTO findUserByUserName(String username) {
+		Optional<User> userOptional = userRepository.findByUsername(username);
 		if (userOptional.isPresent()) {
 			return userMapper.toUserDTO(userOptional.get());
 		} else {
-			// TODO: Construct better Response
-			throw new RuntimeException("Entity Not Found");
+			throw new UserNotFoundException(username);
 		}
 	}
 
@@ -45,8 +45,7 @@ public class UserServiceImpl implements UserService {
 			userRepository.deleteById(userOptional.get().getId());
 			return true;
 		} else {
-			// TODO: Construct better Response
-			throw new RuntimeException("Entity Not Found");
+			throw new UserNotFoundException(username);
 		}
 	}
 
@@ -59,8 +58,7 @@ public class UserServiceImpl implements UserService {
 			UserDTO savedDTO = createUser(userDTO);
 			return savedDTO;
 		} else {
-			// TODO: Construct better Response
-			throw new RuntimeException("Entity Not Found");
+			throw new UserNotFoundException(username);
 		}
 	}
 
@@ -95,8 +93,7 @@ public class UserServiceImpl implements UserService {
 			User savedEntity = userRepository.save(entity);
 			return userMapper.toUserDTO(savedEntity);
 		} else {
-			// TODO: Construct better Response
-			throw new RuntimeException("Entity Not Found");
+			throw new UserNotFoundException(username);
 		}
 	}
 
